@@ -15,6 +15,19 @@ REMINDER_DAYS = 2  # alert this many days before the cheque date
 EXPIRY_WARNING_DAYS = 14  # alert when a held cheque is this close to going stale
 
 
+
+def get_company_cheque_settings(company):
+    settings = get_company_cheque_settings(self.company)
+    for row in (settings.get("company_accounts") or settings.get("default_cheque_accounts") or settings.get("accounts") or []):
+        if row.get("company") == company:
+            return row
+    # যদি কোনো চাইল্ড টেবিলে company ম্যাচ করে (যেকোনো টেবিল ফিল্ডনাম হোক না কেন)
+    for df in settings.meta.get_table_fields():
+        for row in (settings.get(df.fieldname) or []):
+            if row.get("company") == company:
+                return row
+    return settings
+
 class ChequeRegister(Document):
 	# ------------------------------------------------------------------
 	# Lifecycle hooks
@@ -354,25 +367,27 @@ class ChequeRegister(Document):
 
 	@frappe.whitelist()
 	def mark_cleared(self, clearance_date=None):
-		"""Bank confirmed the money. Syncs clearance date so Bank Reconciliation picks it up."""
+		"""Bank confirmed the money. Creates Clearance Journal Entry directly from Received or Deposited."""
 		self.check_permission("write")
 		clearance_date = getdate(clearance_date or nowdate())
 
 		if self.cheque_type == "Collection Cheque":
-			self._require("Collection Cheque", "Deposited")
-			if clearance_date < getdate(self.deposit_date):
-				frappe.throw(_("Clearance date cannot be before the deposit date."))
+			self._require("Collection Cheque", "Received", "Deposited")
+			if not self.bank_account:
+				frappe.throw(_("Set Deposit / Bank Account (GL) first."))
+			if not self.cheque_in_hand_account:
+				frappe.throw(_("Set Cheques in Hand Account first."))
 
-			bank_entry = self.deposit_journal_entry
-			if self.under_collection_account:
-				# move money from Under Collection to the real bank account
+			if not self.deposit_journal_entry:
+				source_acc = self.under_collection_account if (self.status == "Deposited" and self.under_collection_account) else self.cheque_in_hand_account
 				self.clearance_journal_entry = self._make_journal_entry(
 					clearance_date,
-					[(self.bank_account, self.amount, 0), (self.under_collection_account, 0, self.amount)],
+					[(self.bank_account, self.amount, 0), (source_acc, 0, self.amount)],
 					_("Cheque {0} cleared | Party: {1} | Bank: {2} ({3})").format(self.cheque_no, self.party_name or self.party or "", self.cheque_bank, self.name),
 				)
-				bank_entry = self.clearance_journal_entry
-			frappe.db.set_value("Journal Entry", bank_entry, "clearance_date", clearance_date)
+				frappe.db.set_value("Journal Entry", self.clearance_journal_entry, "clearance_date", clearance_date)
+			else:
+				frappe.db.set_value("Journal Entry", self.deposit_journal_entry, "clearance_date", clearance_date)
 		else:
 			self._require("Payment Cheque", "Issued")
 			if not self.payment_entry:
@@ -381,7 +396,6 @@ class ChequeRegister(Document):
 				frappe.throw(_("Payment Entry {0} is not submitted.").format(self.payment_entry))
 
 			if self.pdc_payable_account:
-				# bank balance drops now: Dr PDC Payable / Cr Bank, dated when the bank deducted the money
 				if not self.bank_account:
 					frappe.throw(_("Set Bank Account (GL) first."))
 				self.clearance_journal_entry = self._make_journal_entry(

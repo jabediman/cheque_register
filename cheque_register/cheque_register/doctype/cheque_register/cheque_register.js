@@ -1,3 +1,15 @@
+
+function _get_company_cheque_row(settings_doc, company) {
+    if (!settings_doc) return {};
+    for (let key of Object.keys(settings_doc)) {
+        if (Array.isArray(settings_doc[key])) {
+            let match = settings_doc[key].find(r => r.company === company);
+            if (match) return match;
+        }
+    }
+    return settings_doc;
+}
+
 // Copyright (c) 2026, Your Company and contributors
 // For license information, please see license.txt
 
@@ -142,7 +154,7 @@ frappe.ui.form.on("Cheque Register", {
 		}
 
 		if (incoming && status === "Received") {
-			frm.add_custom_button(__("Deposit to Bank"), () => frm.trigger("deposit"), group);
+			if (false) frm.add_custom_button(__("Deposit to Bank"), () => frm.trigger("deposit"), group);
 			frm.page.set_inner_btn_group_as_primary(group);
 		}
 		if (incoming && status === "Deposited") {
@@ -338,4 +350,65 @@ frappe.ui.form.on("Cheque Register", {
 	company(frm) {
 		update_bank_account_filter(frm);
 	}
+});
+
+
+frappe.ui.form.on("Cheque Register", {
+    onload: function(frm) {
+        if (frm.is_new() && frm.doc.company) {
+            frm.trigger("fetch_company_cheque_defaults");
+        }
+    },
+    company: function(frm) {
+        frm.trigger("fetch_company_cheque_defaults");
+    },
+    fetch_company_cheque_defaults: function(frm) {
+        if (!frm.doc.company) return;
+        frappe.db.get_doc("Cheque Settings").then(settings => {
+            if (!settings) return;
+            let row = null;
+            for (let key of Object.keys(settings)) {
+                if (Array.isArray(settings[key])) {
+                    row = settings[key].find(r => r.company === frm.doc.company);
+                    if (row) break;
+                }
+            }
+            const src = row || settings;
+            if (src.default_mode_of_payment && !frm.doc.mode_of_payment) {
+                frm.set_value("mode_of_payment", src.default_mode_of_payment);
+            }
+            const in_hand = src.cheques_in_hand_account || src.cheque_in_hand_account;
+            if (in_hand) {
+                frm.set_value("cheque_in_hand_account", in_hand);
+            }
+            const issued = src.cheques_issued_account || src.pdc_payable_account;
+            if (issued) {
+                frm.set_value("pdc_payable_account", issued);
+            }
+        });
+    }
+});
+
+
+frappe.ui.form.on("Cheque Register", {
+    refresh: function(frm) {
+        if (frm.doc.docstatus === 1 && frm.doc.cheque_type === "Collection Cheque" && frm.doc.status === "Received") {
+            frm.add_custom_button(__("Cheque Passed"), function() {
+                frappe.prompt(
+                    [{ fieldname: "clearance_date", fieldtype: "Date", label: __("Clearance Date"), default: frappe.datetime.get_today(), reqd: 1 }],
+                    function(values) {
+                        frm.call({
+                            method: "mark_cleared",
+                            doc: frm.doc,
+                            args: { clearance_date: values.clearance_date },
+                            freeze: true,
+                            callback: function() { frm.reload_doc(); }
+                        });
+                    },
+                    __("Mark Cheque Passed"),
+                    __("Confirm")
+                );
+            }, __("Actions"));
+        }
+    }
 });
