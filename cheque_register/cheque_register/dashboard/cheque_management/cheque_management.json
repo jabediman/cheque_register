@@ -1,0 +1,32 @@
+{
+ "cards": [
+  {
+   "card": "Outgoing Due Today"
+  },
+  {
+   "card": "Outgoing Due in 7 Days"
+  },
+  {
+   "card": "Outgoing Past Date Not Cleared"
+  },
+  {
+   "card": "Incoming Ready to Deposit"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Cheque Due Chart",
+   "width": "Full"
+  }
+ ],
+ "creation": "2026-11-13 16:30:00.000000",
+ "dashboard_name": "Cheque Management",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "module": "Cheque Register",
+ "name": "Cheque Management",
+ "owner": "Administrator"
+}

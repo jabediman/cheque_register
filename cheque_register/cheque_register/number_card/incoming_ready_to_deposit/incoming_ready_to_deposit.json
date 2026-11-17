@@ -1,0 +1,16 @@
+{
+ "creation": "2026-11-13 16:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "filters_json": "[]",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Incoming Ready to Deposit",
+ "method": "cheque_register.cheque_register.dashboard_cards.incoming_ready_to_deposit",
+ "module": "Cheque Register",
+ "name": "Incoming Ready to Deposit",
+ "owner": "Administrator",
+ "show_percentage_stats": 0,
+ "type": "Custom"
+}

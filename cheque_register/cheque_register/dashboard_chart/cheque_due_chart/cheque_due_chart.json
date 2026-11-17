@@ -1,0 +1,19 @@
+{
+ "chart_name": "Cheque Due Chart",
+ "chart_type": "Report",
+ "creation": "2026-11-13 16:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{}",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "module": "Cheque Register",
+ "name": "Cheque Due Chart",
+ "owner": "Administrator",
+ "report_name": "Cheque Due Schedule",
+ "roles": [],
+ "timeseries": 0,
+ "type": "Bar",
+ "use_report_chart": 1
+}

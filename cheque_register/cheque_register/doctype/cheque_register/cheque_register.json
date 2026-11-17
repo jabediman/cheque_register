@@ -1,0 +1,438 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-11-13 07:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "naming_series",
+  "cheque_type",
+  "company",
+  "column_break_1",
+  "status",
+  "transaction_date",
+  "remarks",
+  "party_section",
+  "party_type",
+  "party",
+  "party_name",
+  "cheque_section",
+  "cheque_no",
+  "cheque_date",
+  "amount",
+  "column_break_2",
+  "cheque_bank",
+  "cheque_branch",
+  "is_account_payee",
+  "is_post_dated",
+  "accounting_section",
+  "mode_of_payment",
+  "cheque_in_hand_account",
+  "pdc_payable_account",
+  "column_break_3",
+  "bank_account",
+  "under_collection_account",
+  "allocation_section",
+  "references",
+  "allocation_totals_section",
+  "total_allocated",
+  "column_break_6",
+  "unallocated_amount",
+  "lifecycle_section",
+  "deposit_date",
+  "clearance_date",
+  "dishonour_date",
+  "column_break_4",
+  "dishonour_reason",
+  "bank_charges",
+  "bank_charges_account",
+  "links_section",
+  "payment_entry",
+  "deposit_journal_entry",
+  "column_break_5",
+  "clearance_journal_entry",
+  "dishonour_journal_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Cheque Info"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "CHQ-.YYYY.-.#####",
+   "default": "CHQ-.YYYY.-.#####",
+   "reqd": 1,
+   "set_only_once": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cheque_type",
+   "fieldtype": "Select",
+   "label": "Cheque Type",
+   "options": "Collection Cheque\nPayment Cheque",
+   "default": "Collection Cheque",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Received\nDeposited\nCleared\nDishonoured\nIssued\nCancelled",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "transaction_date",
+   "fieldtype": "Date",
+   "label": "Received / Issue Date",
+   "default": "Today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "party_section",
+   "fieldtype": "Section Break",
+   "label": "Party"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "Customer\nSupplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "label": "Deposit / Cash / Paying Account",
+   "options": "Account",
+   "description": "Deposit bank (Incoming) / paying bank (Outgoing)",
+   "hidden": 0
+  },
+  {
+   "fieldname": "cheque_section",
+   "fieldtype": "Section Break",
+   "label": "Cheque Details"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque No",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cheque_bank",
+   "fieldtype": "Link",
+   "label": "Cheque Bank",
+   "reqd": 1,
+   "options": "Bank",
+   "read_only": 0,
+   "hidden": 0
+  },
+  {
+   "fieldname": "cheque_branch",
+   "fieldtype": "Data",
+   "label": "Branch"
+  },
+  {
+   "fieldname": "is_account_payee",
+   "fieldtype": "Check",
+   "label": "A/C Payee Only",
+   "default": "1"
+  },
+  {
+   "fieldname": "is_post_dated",
+   "fieldtype": "Check",
+   "label": "Post-dated",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "hidden": 1
+  },
+  {
+   "fieldname": "cheque_in_hand_account",
+   "fieldtype": "Link",
+   "label": "Cheques in Hand Account",
+   "options": "Account",
+   "description": "Current Asset account, e.g. Cheques in Hand (PDC Receivable)",
+   "hidden": 1
+  },
+  {
+   "fieldname": "pdc_payable_account",
+   "fieldtype": "Link",
+   "label": "Cheques Issued (PDC Payable) Account",
+   "options": "Account",
+   "description": "Liability account (Account Type must NOT be Payable). Bank balance stays unchanged until you mark the cheque cleared.",
+   "hidden": 1
+  },
+  {
+   "fieldname": "under_collection_account",
+   "fieldtype": "Link",
+   "label": "Under Collection Account",
+   "options": "Account",
+   "description": "Optional. If set, money stays here until the bank clears the cheque",
+   "hidden": 1
+  },
+  {
+   "fieldname": "allocation_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Allocation",
+   "description": "Optional. Leave empty to record the cheque as an advance on account."
+  },
+  {
+   "fieldname": "references",
+   "fieldtype": "Table",
+   "label": "Invoices",
+   "options": "Cheque Register Invoice"
+  },
+  {
+   "fieldname": "allocation_totals_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_allocated",
+   "fieldtype": "Currency",
+   "label": "Total Allocated",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unallocated_amount",
+   "fieldtype": "Currency",
+   "label": "Unallocated (Advance)",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "lifecycle_section",
+   "fieldtype": "Section Break",
+   "label": "Lifecycle",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "deposit_date",
+   "fieldtype": "Date",
+   "label": "Deposit Date",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "dishonour_date",
+   "fieldtype": "Date",
+   "label": "Dishonour Date",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dishonour_reason",
+   "fieldtype": "Small Text",
+   "label": "Dishonour Reason",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "bank_charges",
+   "fieldtype": "Currency",
+   "label": "Bank Charges",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "bank_charges_account",
+   "fieldtype": "Link",
+   "label": "Bank Charges Account",
+   "options": "Account",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "links_section",
+   "fieldtype": "Section Break",
+   "label": "Linked Documents",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "deposit_journal_entry",
+   "fieldtype": "Link",
+   "label": "Deposit Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "clearance_journal_entry",
+   "fieldtype": "Link",
+   "label": "Clearance Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "dishonour_journal_entry",
+   "fieldtype": "Link",
+   "label": "Dishonour Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "allow_on_submit": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-13 12:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "Cheque Register",
+ "name": "Cheque Register",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "search_fields": "cheque_no,party_name,cheque_bank",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "cheque_no",
+ "track_changes": 1,
+ "is_submittable": 1
+}

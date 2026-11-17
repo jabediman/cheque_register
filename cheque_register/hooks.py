@@ -262,3 +262,18 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+scheduler_events = {
+    "daily": [
+        "cheque_register.cheque_register.doctype.cheque_register.cheque_register.send_due_cheque_reminders",
+    ],
+}
+
+after_install = "cheque_register.setup_banks.setup_bd_banks"
+after_migrate = "cheque_register.setup_banks.setup_bd_banks"
+
+
+fixtures = [
+    {"dt": "Bank Cheque Layout"},
+    {"dt": "Print Format", "filters": [["name", "=", "Cheque Leaf Print"]]}
+]
